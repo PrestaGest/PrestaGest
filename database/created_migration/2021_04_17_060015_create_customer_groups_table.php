@@ -14,16 +14,15 @@ class CreateCustomerGroupsTable extends Migration
     public function up()
     {
         Schema::create('customer_groups', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('id_group')->nullable();
-            $table->double('reduction', 3, 2)->default('0.00')->nullable();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('id_group')->unique();
+            $table->double('reduction', 3, 2)->nullable()->default(0.00);
             $table->boolean('price_display_method')->default(0);
             $table->boolean('show_prices')->default(1);
-            $table->datetime('date_add')->nullable();
-            $table->datetime('date_upd')->nullable();
+            $table->dateTime('date_add')->nullable();
+            $table->dateTime('date_upd')->nullable();
             $table->string('name')->nullable();
             $table->timestamps();
-            $table->index('id_group');
         });
     }
 

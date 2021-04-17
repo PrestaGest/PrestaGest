@@ -56,6 +56,26 @@ class PrestashopDataController extends Controller
             $resource->id_order = $resource->id;
             unset($resource->id);
             Order::upsert((array)$resource, 'id_order');
+            // foreach ($resource->associations->children()->children() as $res) {
+            //     $res->order_id = $resource->id_order;
+            //     $row = OrderDetail::updateOrCreate((array)$res);
+            // }
+        }
+        return response("INSERTED/UPDATED " .count($resources) . " ORDERS", Response::HTTP_CREATED);
+    }
+
+    public function prestashopUpdateOrderDetails()
+    {
+        // update OrderResource
+        $opt['resource'] = 'order_details';
+        $opt['display'] = 'full';
+        $xml = Prestashop::get($opt);
+        $resources = $xml->order_details->children();
+        dd($resources);
+        foreach ($resources as $resource) {
+            $resource->id_order = $resource->id;
+            unset($resource->id);
+            Order::upsert((array)$resource, 'id_order');
             foreach ($resource->associations->children()->children() as $res) {
                 $res->order_id = $resource->id_order;
                 $row = OrderDetail::updateOrCreate((array)$res);
