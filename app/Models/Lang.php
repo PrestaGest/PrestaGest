@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerAddress extends Model
+class Lang extends Model
 {
     protected $guarded = [];
 
-    public function customer()
+    public function customers()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->hasMany(Customer::class);
     }
 }

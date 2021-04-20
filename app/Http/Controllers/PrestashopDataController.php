@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lang;
 use App\Models\Order;
 use App\Models\Customer;
 use App\Models\OrderDetail;
-use Illuminate\Http\Request;
 use App\Models\CustomerGroup;
 use Illuminate\Http\Response;
 use App\Models\CustomerAddress;
@@ -38,7 +38,7 @@ class PrestashopDataController extends Controller
         foreach ($resources as $resource) {
             $resource->id_address = $resource->id;
             unset($resource->id);
-            if($resource->id_customer == 0) $resource->id_customer = 1;
+            if ($resource->id_customer == 0) $resource->id_customer = 1;
             CustomerAddress::upsert((array)$resource, 'id_address');
         }
         return response("INSERTED/UPDATED " . count($resources) . " ADDRESSES", Response::HTTP_CREATED);
@@ -61,27 +61,39 @@ class PrestashopDataController extends Controller
             //     $row = OrderDetail::updateOrCreate((array)$res);
             // }
         }
-        return response("INSERTED/UPDATED " .count($resources) . " ORDERS", Response::HTTP_CREATED);
+        return response("INSERTED/UPDATED " . count($resources) . " ORDERS", Response::HTTP_CREATED);
+    }
+
+    public function prestashopUpdateLanguage()
+    {
+        $opt['resource'] = 'languages';
+        $opt['display'] = 'full';
+        $xml = Prestashop::get($opt);
+        $resources = $xml->languages->children();
+        // dd($resources);
+        foreach ($resources as $resource) {
+            $resource->id_lang = $resource->id;
+            unset($resource->id);
+            Lang::upsert((array)$resource, 'id_lang');
+        }
+        return response("INSERTED/UPDATED " . count($resources) . " Lang", Response::HTTP_CREATED);
     }
 
     public function prestashopUpdateOrderDetails()
     {
-        // update OrderResource
         $opt['resource'] = 'order_details';
         $opt['display'] = 'full';
         $xml = Prestashop::get($opt);
         $resources = $xml->order_details->children();
-        dd($resources);
         foreach ($resources as $resource) {
-            $resource->id_order = $resource->id;
+            // dump((int)$resource->associations->taxes->tax->children());
+            // $resource->tax = (int)$resource->associations->taxes->tax->children();
+            $resource->id_order_detail = $resource->id;
             unset($resource->id);
-            Order::upsert((array)$resource, 'id_order');
-            foreach ($resource->associations->children()->children() as $res) {
-                $res->order_id = $resource->id_order;
-                $row = OrderDetail::updateOrCreate((array)$res);
-            }
+            unset($resource->associations);
+            OrderDetail::upsert((array)$resource, 'id_order_detail');
         }
-        return response("INSERTED/UPDATED " .count($resources) . " ORDERS WITH " . $row->count() . " ROWS", Response::HTTP_CREATED);
+        return response("INSERTED/UPDATED " . count($resources) . " ORDERS Detail", Response::HTTP_CREATED);
     }
 
     public function prestashopUpdateGroups()
@@ -98,7 +110,7 @@ class PrestashopDataController extends Controller
             $resource->name = $resource->name->children();
             CustomerGroup::upsert((array)$resource, 'id_group');
         }
-        return response("INSERTED/UPDATED " .count($resources) . " GROUP", Response::HTTP_CREATED);
+        return response("INSERTED/UPDATED " . count($resources) . " GROUP", Response::HTTP_CREATED);
     }
 
     public function prestashopUpdateProducts()
@@ -116,7 +128,7 @@ class PrestashopDataController extends Controller
                 $row = OrderDetail::updateOrCreate((array)$orderDetail);
             }
         }
-        return response("INSERTED/UPDATED " .count($resources) . " PRODUCTS WITH " . $row->count() . " ROWS", Response::HTTP_CREATED);
+        return response("INSERTED/UPDATED " . count($resources) . " PRODUCTS WITH " . $row->count() . " ROWS", Response::HTTP_CREATED);
     }
 
     public function prestashopUpdateAll()
@@ -125,15 +137,33 @@ class PrestashopDataController extends Controller
         $this->prestashopUpdateCustomers();
         $this->prestashopUpdateCustomerAddresses();
         $this->prestashopUpdateOrders();
+        $this->prestashopUpdateOrderDetails();
+        $this->prestashopUpdateLanguage();
         return ('Database updated successfully!');
     }
-    public function updateOrders()
+
+    public function updatePrestashopDataStandard($call = "orders", $model = "Order", $full = true)
+    {
+        $opt['resource'] = $call;
+        if($full) $opt['display'] = 'fully';
+        $xml = Prestashop::get($opt);
+        $resources = $xml->$call->children();
+        foreach ($resources as $resource) {
+            $id = "id_" . ucfirst($model);
+            $resource->$id = $resource->id;
+            unset($resource->id);
+            $model::upsert((array)$resource, 'id_order');
+        }
+    }
+
+    public function test($call = 'languages')
     {
         // leggo gli ID prodotti da PS
-        $opt['resource'] = 'orders';
+        $opt['resource'] = $call;
+        $opt['display'] = 'full';
         $xml = Prestashop::get($opt);
-        $resources = $xml->orders->children();
-
+        $resources = $xml->$call->children();
+        dd($resources);
         // faccio il foreach degli ID per recuperare gli altri dati
         foreach ($resources as $id_customer) {
 

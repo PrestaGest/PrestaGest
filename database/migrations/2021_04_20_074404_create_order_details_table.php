@@ -55,13 +55,14 @@ class CreateOrderDetailsTable extends Migration
             $table->double('unit_price_tax_excl', 20, 6)->nullable()->default(0.000000);
             $table->double('total_price_tax_incl', 20, 6)->nullable()->default(0.000000);
             $table->double('total_price_tax_excl', 20, 6)->nullable()->default(0.000000);
+            $table->double('total_shipping_price_tax_incl', 20, 6)->nullable()->default(0.000000);
             $table->double('total_shipping_price_tax_excl', 20, 6)->nullable()->default(0.000000);
             $table->double('purchase_supplier_price', 20, 6)->nullable()->default(0.000000);
             $table->double('original_product_price', 20, 6)->nullable()->default(0.000000);
             $table->double('original_wholesale_price', 20, 6)->nullable()->default(0.000000);
             $table->double('total_refunded_tax_excl', 20, 6)->nullable()->default(0.000000);
             $table->double('total_refunded_tax_incl', 20, 6)->nullable()->default(0.000000);
-            $table->unsignedInteger('tax')->nullable();
+            // $table->unsignedInteger('tax')->nullable();
             $table->timestamps();
         });
     }
