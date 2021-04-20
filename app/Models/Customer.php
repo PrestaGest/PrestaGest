@@ -8,9 +8,9 @@ class Customer extends Model
 {
     protected $guarded = [];
 
-    public function customerAddress()
+    public function customerAddresses()
     {
-        return $this->hasMany(CustomerAddress::class);
+        return $this->hasMany(CustomerAddress::class, 'id_customer', 'id_customer');
     }
 
     public function customerGroup()

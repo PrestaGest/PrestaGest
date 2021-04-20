@@ -53,92 +53,18 @@ class CustomerResource extends Resource
                         Components\BelongsToSelect::make('id_lang')
                             ->relationship('customerLang', 'name')
                             ->preload(),
-                    ]
-                )->columns(3),
-                // Components\Fieldset::make(
-                //     __('Address'),
-                //     [
-                //         Components\TextInput::make('address_1')
-                //             ->required()
-                //             ->label(__('Address 1')),
-                //         Components\TextInput::make('address_2')->label(__('Address 2')),
-                //         Components\TextInput::make('city')
-                //             ->required()
-                //             ->label(__('City')),
-                //         Components\TextInput::make('state')
-                //             ->required()
-                //             ->label(__('State')),
-                //         Components\TextInput::make('post_code')
-                //             ->required()
-                //             ->label(__('Post Code')),
-                //         Components\TextInput::make('country_code')->label(__('Country Code')),
-                //     ]
-                // )->columns(3),
-                // Components\Fieldset::make(
-                //     __('Other Data'),
-                //     [
-                //         Components\Select::make('checkin_hour')
-                //             ->placeholder('Checkin Hour')
-                //             ->options([
-                //                 '12:00'     => '12:00',
-                //                 '12:30'     => '12:30',
-                //                 '13:00'     => '13:00',
-                //                 '13:30'     => '13:30',
-                //                 '14:00'     => '14:00',
-                //                 '14:30'     => '14:30',
-                //                 '15:00'     => '15:00',
-                //                 '15:30'     => '15:30',
-                //                 '16:00'     => '16:00',
-                //                 '16:30'     => '16:30',
-                //             ])
-                //             ->default('15:00')
-                //             ->label(__('Checkin Hour')),
-                //         Components\Select::make('checkout_hour')
-                //             ->placeholder('Checkout Hour')
-                //             ->options([
-                //                 '9:00'  => '9:00',
-                //                 '9:30'  => '9:30',
-                //                 '10:00' => '10:00',
-                //                 '10:30' => '10:30',
-                //                 '11:00' => '11:00',
-                //                 '11:30' => '11:30',
-                //                 '12:00' => '12:00',
-                //                 '12:30' => '12:30',
-                //             ])
-                //             ->default('10:30')
-                //             ->label(__('Checkout Hour')),
-                //         Components\Select::make('active')
-                //             ->placeholder('Select status')
-                //             ->options([
-                //                 '0' => 'No',
-                //                 '1' => 'Yes',
-                //             ])->default(0)->label(__('Active')),
-                //         Components\TextInput::make('latitude')->label(__('Latitude')),
-                //         Components\TextInput::make('longitude')->label(__('Longitude')),
 
-                // (auth()->user()->is_admin
-                //     ?
-                //     Components\Select::make('user_id')
-                //     ->options($aaa = User::whereIsAdmin(0)
-                //         ->pluck('name', 'id')
-                //         ->toArray())
-                //     :
-                //     Components\TextInput::make('user_id')->default(auth()->user()->id)->hidden()),
-                // ]
-                // )->columns(3),
-                // Components\Fieldset::make(
-                //     _('Description'),
-                //     [
-                //         Components\RichEditor::make('description')
-                //             ->label(__('Description'))
-                //             ->enableToolbarButtons($buttons = [])
-                //             ->disableToolbarButtons($buttons = ['heading', 'subheading']),
-                //         Components\RichEditor::make('term_cond')
-                //             ->label(__('Terms and Conditions'))
-                //             ->enableToolbarButtons($buttons = [])
-                //             ->disableToolbarButtons($buttons = ['heading', 'subheading']),
-                //     ]
-                // )->columns(2),
+                        Components\DatePicker::make('birthday')
+                            ->displayFormat($format = 'F j, Y')
+                            ->format($format = 'Y-m-d'),
+
+                        Components\DateTimePicker::make('date_add')
+                            ->displayFormat($format = 'F j, Y H:i:s')
+                            ->format($format = 'Y-m-d H:i:s')
+                            ->disabled(),
+                    ]
+                )->columns(4),
+
             ])->columns(1);
     }
 
@@ -152,7 +78,7 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                Columns\Text::make('id')
+                Columns\Text::make('id_customer')
                     ->label(__('ID'))
                     ->primary()
                     ->searchable()
@@ -184,6 +110,12 @@ class CustomerResource extends Resource
                         '1' => 'Yes',
                         '0' => 'No',
                     ])->sortable()->default(0),
+                Columns\Text::make('active')
+                    ->label(__('Active'))
+                    ->options([
+                        '1' => 'Yes',
+                        '0' => 'No',
+                    ])->sortable()->default(0),
 
                 Columns\Text::make('customerGroup.name')
                     ->label(__('Group'))
@@ -199,7 +131,7 @@ class CustomerResource extends Resource
     public static function relations()
     {
         return [
-            //
+            RelationManagers\CustomerAddressesRelationManager::class,
         ];
     }
 
