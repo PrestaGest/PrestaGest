@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Lang;
 use App\Models\Order;
 use App\Models\Customer;
+use App\Models\OrderState;
 use App\Models\OrderDetail;
+use App\Models\OrderPayment;
 use App\Models\CustomerGroup;
 use Illuminate\Http\Response;
 use App\Models\CustomerAddress;
@@ -64,7 +66,7 @@ class PrestashopDataController extends Controller
         return response("INSERTED/UPDATED " . count($resources) . " ORDERS", Response::HTTP_CREATED);
     }
 
-    public function prestashopUpdateLanguage()
+    public function prestashopUpdateLanguages()
     {
         $opt['resource'] = 'languages';
         $opt['display'] = 'full';
@@ -113,6 +115,63 @@ class PrestashopDataController extends Controller
         return response("INSERTED/UPDATED " . count($resources) . " GROUP", Response::HTTP_CREATED);
     }
 
+    public function prestashopUpdateOrderStates()
+    {
+        // update OrderResource
+        $opt['resource'] = 'order_states';
+        $opt['display'] = 'full';
+        $xml = Prestashop::get($opt);
+        $resources = $xml->order_states->children();
+        // dd($resources);
+        foreach ($resources as $resource) {
+            $resource->id_order_state = $resource->id;
+            unset($resource->id);
+            $resource->name = $resource->name->children();
+            $resource->template = $resource->template->children();
+            OrderState::upsert((array)$resource, 'id_order_state');
+        }
+        return response("INSERTED/UPDATED " . count($resources) . " ORDER STATES", Response::HTTP_CREATED);
+    }
+
+    public function prestashopUpdateOrderPayments()
+    {
+        // update OrderResource
+        $opt['resource'] = 'order_payments';
+        $opt['display'] = 'full';
+        $xml = Prestashop::get($opt);
+        $resources = $xml->order_payments->children();
+        // dd($resources);
+        foreach ($resources as $resource) {
+            $resource->id_order_payment = $resource->id;
+            unset($resource->id);
+            OrderPayment::upsert((array)$resource, 'id_order_payment');
+        }
+        return response("INSERTED/UPDATED " . count($resources) . " ORDER PAYMENT", Response::HTTP_CREATED);
+    }
+
+    public function test($call = 'order_payments')
+    {
+        // leggo gli ID prodotti da PS
+        $opt['resource'] = $call;
+        $opt['display'] = 'full';
+        $xml = Prestashop::get($opt);
+        $resources = $xml->$call->children();
+        dd($resources);
+    }
+
+    public function prestashopUpdateAll()
+    {
+        $this->prestashopUpdateGroups();
+        $this->prestashopUpdateCustomers();
+        $this->prestashopUpdateCustomerAddresses();
+        $this->prestashopUpdateOrders();
+        $this->prestashopUpdateOrderDetails();
+        $this->prestashopUpdateLanguages();
+        $this->prestashopUpdateOrderStates();
+        $this->prestashopUpdateOrderPayments();
+        return ('Database updated successfully!');
+    }
+
     public function prestashopUpdateProducts()
     {
         // update OrderResource
@@ -130,18 +189,6 @@ class PrestashopDataController extends Controller
         }
         return response("INSERTED/UPDATED " . count($resources) . " PRODUCTS WITH " . $row->count() . " ROWS", Response::HTTP_CREATED);
     }
-
-    public function prestashopUpdateAll()
-    {
-        $this->prestashopUpdateGroups();
-        $this->prestashopUpdateCustomers();
-        $this->prestashopUpdateCustomerAddresses();
-        $this->prestashopUpdateOrders();
-        $this->prestashopUpdateOrderDetails();
-        $this->prestashopUpdateLanguage();
-        return ('Database updated successfully!');
-    }
-
     public function updatePrestashopDataStandard($call = "orders", $model = "Order", $full = true)
     {
         $opt['resource'] = $call;
@@ -156,7 +203,7 @@ class PrestashopDataController extends Controller
         }
     }
 
-    public function test($call = 'languages')
+    public function other($call = 'order_states')
     {
         // leggo gli ID prodotti da PS
         $opt['resource'] = $call;
