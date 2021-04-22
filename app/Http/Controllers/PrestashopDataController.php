@@ -15,6 +15,14 @@ use myfender\PrestashopWebService\PrestashopWebServiceFacade as Prestashop;
 
 class PrestashopDataController extends Controller
 {
+    public function flushScreen($function, $id)
+    {
+        if (ob_get_level() == 0) ob_start();
+        echo $function['resource'] . ": " . $id . "<br>";
+        ob_flush();
+        flush();
+    }
+
     public function prestashopUpdateCustomers()
     {
         // update CustomerResource
@@ -23,6 +31,7 @@ class PrestashopDataController extends Controller
         $xml = Prestashop::get($opt);
         $resources = $xml->customers->children();
         foreach ($resources as $resource) {
+            $this->flushScreen($opt, $resource->id);
             $resource->id_customer = $resource->id;
             unset($resource->id);
             Customer::upsert((array)$resource, 'id_customer');
@@ -32,12 +41,15 @@ class PrestashopDataController extends Controller
 
     public function prestashopUpdateCustomerAddresses()
     {
+        // for timeout
+        if (ob_get_level() == 0) ob_start();
         // update CustomerResource
         $opt['resource'] = 'addresses';
         $opt['display'] = 'full';
         $xml = Prestashop::get($opt);
         $resources = $xml->addresses->children();
         foreach ($resources as $resource) {
+            $this->flushScreen($opt, $resource->id);
             $resource->id_address = $resource->id;
             unset($resource->id);
             if ($resource->id_customer == 0) $resource->id_customer = 1;
@@ -55,6 +67,7 @@ class PrestashopDataController extends Controller
         $resources = $xml->orders->children();
         // dd($resources);
         foreach ($resources as $resource) {
+            $this->flushScreen($opt, $resource->id);
             $resource->id_order = $resource->id;
             unset($resource->id);
             Order::upsert((array)$resource, 'id_order');
@@ -74,6 +87,7 @@ class PrestashopDataController extends Controller
         $resources = $xml->languages->children();
         // dd($resources);
         foreach ($resources as $resource) {
+            $this->flushScreen($opt, $resource->id);
             $resource->id_lang = $resource->id;
             unset($resource->id);
             Lang::upsert((array)$resource, 'id_lang');
@@ -84,18 +98,28 @@ class PrestashopDataController extends Controller
     public function prestashopUpdateOrderDetails()
     {
         $opt['resource'] = 'order_details';
-        $opt['display'] = 'full';
         $xml = Prestashop::get($opt);
-        $resources = $xml->order_details->children();
-        foreach ($resources as $resource) {
-            // dump((int)$resource->associations->taxes->tax->children());
-            // $resource->tax = (int)$resource->associations->taxes->tax->children();
-            $resource->id_order_detail = $resource->id;
-            unset($resource->id);
-            unset($resource->associations);
-            OrderDetail::upsert((array)$resource, 'id_order_detail');
+        $counting = count($xml->order_details->children());
+        $increment = 10000;
+        // for ($i = 0; $i < 72000; $i += 1800) {
+        //     $sql = "SELECT some expression FROM table WHERE condition LIMIT $i, 1800 INTO OUTFILE '/path/to/sitemap-$i.xml'";
+        // }
+        for ($i = 0; $i < $counting; $i += $increment) {
+            $opt['display'] = 'full';
+            $opt['limit'] = $i . ',' . $increment;
+            $xml = Prestashop::get($opt);
+            $resources = $xml->order_details->children();
+            foreach ($resources as $resource) {
+                $this->flushScreen($opt, $resource->id);
+                // dump((int)$resource->associations->taxes->tax->children());
+                // $resource->tax = (int)$resource->associations->taxes->tax->children();
+                $resource->id_order_detail = $resource->id;
+                unset($resource->id);
+                unset($resource->associations);
+                OrderDetail::upsert((array)$resource, 'id_order_detail');
+            }
         }
-        return response("INSERTED/UPDATED " . count($resources) . " ORDERS Detail", Response::HTTP_CREATED);
+        return response("INSERTED/UPDATED " . count($counting) . " ORDERS Detail", Response::HTTP_CREATED);
     }
 
     public function prestashopUpdateGroups()
@@ -107,6 +131,7 @@ class PrestashopDataController extends Controller
         $resources = $xml->groups->children();
         // dd($resources);
         foreach ($resources as $resource) {
+            $this->flushScreen($opt, $resource->id);
             $resource->id_group = $resource->id;
             unset($resource->id);
             $resource->name = $resource->name->children();
@@ -124,6 +149,7 @@ class PrestashopDataController extends Controller
         $resources = $xml->order_states->children();
         // dd($resources);
         foreach ($resources as $resource) {
+            $this->flushScreen($opt, $resource->id);
             $resource->id_order_state = $resource->id;
             unset($resource->id);
             $resource->name = $resource->name->children();
@@ -142,6 +168,7 @@ class PrestashopDataController extends Controller
         $resources = $xml->order_payments->children();
         // dd($resources);
         foreach ($resources as $resource) {
+            $this->flushScreen($opt, $resource->id);
             $resource->id_order_payment = $resource->id;
             unset($resource->id);
             OrderPayment::upsert((array)$resource, 'id_order_payment');
@@ -149,27 +176,29 @@ class PrestashopDataController extends Controller
         return response("INSERTED/UPDATED " . count($resources) . " ORDER PAYMENT", Response::HTTP_CREATED);
     }
 
-    public function test($call = 'order_payments')
+    public function test($call = 'order_details')
     {
         // leggo gli ID prodotti da PS
         $opt['resource'] = $call;
         $opt['display'] = 'full';
+        $opt['limit'] = '0,100';
         $xml = Prestashop::get($opt);
+
         $resources = $xml->$call->children();
         dd($resources);
     }
 
     public function prestashopUpdateAll()
     {
-        $this->prestashopUpdateGroups();
-        $this->prestashopUpdateCustomers();
+        // $this->prestashopUpdateGroups();
+        // $this->prestashopUpdateCustomers();
         $this->prestashopUpdateCustomerAddresses();
-        $this->prestashopUpdateOrders();
-        $this->prestashopUpdateOrderDetails();
-        $this->prestashopUpdateLanguages();
-        $this->prestashopUpdateOrderStates();
-        $this->prestashopUpdateOrderPayments();
-        return ('Database updated successfully!');
+        // $this->prestashopUpdateOrders();
+        // $this->prestashopUpdateLanguages();
+        // $this->prestashopUpdateOrderStates();
+        // $this->prestashopUpdateOrderPayments();
+        // $this->prestashopUpdateOrderDetails();
+        return response("Database updated successfully!", Response::HTTP_CREATED);
     }
 
     public function prestashopUpdateProducts()
@@ -192,7 +221,7 @@ class PrestashopDataController extends Controller
     public function updatePrestashopDataStandard($call = "orders", $model = "Order", $full = true)
     {
         $opt['resource'] = $call;
-        if($full) $opt['display'] = 'fully';
+        if ($full) $opt['display'] = 'fully';
         $xml = Prestashop::get($opt);
         $resources = $xml->$call->children();
         foreach ($resources as $resource) {

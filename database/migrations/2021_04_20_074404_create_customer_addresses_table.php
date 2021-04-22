@@ -31,7 +31,7 @@ class CreateCustomerAddressesTable extends Migration
             $table->string('address2')->nullable();
             $table->string('postcode')->nullable();
             $table->string('city')->nullable();
-            $table->string('other')->nullable();
+            $table->longtext('other')->nullable();
             $table->string('phone')->nullable();
             $table->string('phone_mobile')->nullable();
             $table->string('dni')->nullable();

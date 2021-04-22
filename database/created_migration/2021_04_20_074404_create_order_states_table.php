@@ -19,7 +19,9 @@ class CreateOrderStatesTable extends Migration
             $table->unsignedTinyInteger('invoice')->nullable()->default(0);
             $table->unsignedTinyInteger('send_email')->default(0);
             $table->string('module_name')->nullable()->index('module_name');
+            $table->string('template')->nullable();
             $table->string('color', 32)->nullable();
+            $table->string('name')->nullable();
             $table->unsignedTinyInteger('unremovable');
             $table->unsignedTinyInteger('hidden')->default(0);
             $table->boolean('logable')->default(0);
