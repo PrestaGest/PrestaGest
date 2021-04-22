@@ -176,7 +176,7 @@ class PrestashopDataController extends Controller
         return response("INSERTED/UPDATED " . count($resources) . " ORDER PAYMENT", Response::HTTP_CREATED);
     }
 
-    public function test($call = 'order_details')
+    public function test($call = 'order_payments')
     {
         // leggo gli ID prodotti da PS
         $opt['resource'] = $call;
@@ -192,9 +192,9 @@ class PrestashopDataController extends Controller
     {
         // $this->prestashopUpdateGroups();
         // $this->prestashopUpdateCustomers();
-        $this->prestashopUpdateCustomerAddresses();
-        // $this->prestashopUpdateOrders();
+        // $this->prestashopUpdateCustomerAddresses();
         // $this->prestashopUpdateLanguages();
+        // $this->prestashopUpdateOrders();
         // $this->prestashopUpdateOrderStates();
         // $this->prestashopUpdateOrderPayments();
         // $this->prestashopUpdateOrderDetails();

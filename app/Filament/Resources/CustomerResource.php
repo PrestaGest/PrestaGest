@@ -101,8 +101,9 @@ class CustomerResource extends Resource
                 Columns\Text::make('id_gender')
                     ->label(__('Gender'))
                     ->options([
+                        '0' => '-',
                         '1' => 'Male',
-                        '0' => 'Female',
+                        '2' => 'Female',
                     ])->sortable()->default(0),
                 Columns\Text::make('newsletter')
                     ->label(__('Newsletter'))
