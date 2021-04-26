@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Livewire\WithPagination;
 use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
@@ -21,5 +22,9 @@ class Customer extends Model
     public function customerLang()
     {
         return $this->belongsTo(Lang::class, 'id_default_lang', 'id_lang');
+    }
+    public function orders()
+    {
+        return $this->belongsTo(Order::class, 'id_customer', 'id_customer');
     }
 }

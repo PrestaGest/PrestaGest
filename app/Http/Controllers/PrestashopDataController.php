@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Lang;
 use App\Models\Order;
+use App\Models\State;
+use App\Models\Country;
 use App\Models\Customer;
 use App\Models\OrderState;
 use App\Models\OrderDetail;
@@ -18,7 +20,7 @@ class PrestashopDataController extends Controller
     public function flushScreen($function, $id)
     {
         if (ob_get_level() == 0) ob_start();
-        echo $function['resource'] . ": " . $id . "<br>";
+        echo $function['resource'] . ": " . $id . "\n";
         ob_flush();
         flush();
     }
@@ -95,6 +97,38 @@ class PrestashopDataController extends Controller
         return response("INSERTED/UPDATED " . count($resources) . " Lang", Response::HTTP_CREATED);
     }
 
+    public function prestashopUpdateCountries()
+    {
+        $opt['resource'] = 'countries';
+        $opt['display'] = 'full';
+        $xml = Prestashop::get($opt);
+        $resources = $xml->countries->children();
+        // dd($resources);
+        foreach ($resources as $resource) {
+            $this->flushScreen($opt, $resource->id);
+            $resource->id_country = $resource->id;
+            unset($resource->id);
+            $resource->name = $resource->name->children();
+            Country::upsert((array)$resource, 'id_country');
+        }
+        return response("INSERTED/UPDATED " . count($resources) . " Countries", Response::HTTP_CREATED);
+    }
+
+    public function prestashopUpdateStates($call = "states", $id = "id_state")
+    {
+        $opt['resource'] = $call;
+        $opt['display'] = 'full';
+        $xml = Prestashop::get($opt);
+        $resources = $xml->$call->children();
+        foreach ($resources as $resource) {
+            $this->flushScreen($opt, $resource->id);
+            $resource->$id = $resource->id;
+            unset($resource->id);
+            State::upsert((array)$resource, $id);
+        }
+        return response("INSERTED/UPDATED " . count($resources) . " Countries", Response::HTTP_CREATED);
+    }
+
     public function prestashopUpdateOrderDetails()
     {
         $opt['resource'] = 'order_details';
@@ -119,7 +153,7 @@ class PrestashopDataController extends Controller
                 OrderDetail::upsert((array)$resource, 'id_order_detail');
             }
         }
-        return response("INSERTED/UPDATED " . count($counting) . " ORDERS Detail", Response::HTTP_CREATED);
+        return response("INSERTED/UPDATED " . count($resources) . " ORDERS Detail", Response::HTTP_CREATED);
     }
 
     public function prestashopUpdateGroups()
@@ -176,7 +210,7 @@ class PrestashopDataController extends Controller
         return response("INSERTED/UPDATED " . count($resources) . " ORDER PAYMENT", Response::HTTP_CREATED);
     }
 
-    public function test($call = 'order_payments')
+    public function test($call = 'countries')
     {
         // leggo gli ID prodotti da PS
         $opt['resource'] = $call;
@@ -190,15 +224,17 @@ class PrestashopDataController extends Controller
 
     public function prestashopUpdateAll()
     {
-        // $this->prestashopUpdateGroups();
-        // $this->prestashopUpdateCustomers();
-        // $this->prestashopUpdateCustomerAddresses();
-        // $this->prestashopUpdateLanguages();
-        // $this->prestashopUpdateOrders();
-        // $this->prestashopUpdateOrderStates();
+        $this->prestashopUpdateStates();
+        $this->prestashopUpdateCountries();
+        $this->prestashopUpdateGroups();
+        $this->prestashopUpdateCustomers();
+        $this->prestashopUpdateCustomerAddresses();
+        $this->prestashopUpdateLanguages();
+        $this->prestashopUpdateOrders();
+        $this->prestashopUpdateOrderStates();
+        $this->prestashopUpdateOrderDetails();
         // $this->prestashopUpdateOrderPayments();
-        // $this->prestashopUpdateOrderDetails();
-        return response("Database updated successfully!", Response::HTTP_CREATED);
+        return "Database updated successfully!";
     }
 
     public function prestashopUpdateProducts()
@@ -218,6 +254,8 @@ class PrestashopDataController extends Controller
         }
         return response("INSERTED/UPDATED " . count($resources) . " PRODUCTS WITH " . $row->count() . " ROWS", Response::HTTP_CREATED);
     }
+
+
     public function updatePrestashopDataStandard($call = "orders", $model = "Order", $full = true)
     {
         $opt['resource'] = $call;

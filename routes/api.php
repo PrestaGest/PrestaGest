@@ -26,5 +26,5 @@ Route::get('updateorderdetails', [PrestashopDataController::class, 'prestashopUp
 Route::get('updateproducts', [PrestashopDataController::class, 'prestashopUpdateProducts']);
 Route::get('updatecustomergroups', [PrestashopDataController::class, 'prestashopUpdateGroups']);
 Route::get('updateall', [PrestashopDataController::class, 'prestashopUpdateAll']);
-Route::get('test', [PrestashopDataController::class, 'test']);
+Route::get('test/{resource?}', [PrestashopDataController::class, 'test']);
 // Route::get('test2', [PrestashopDataController::class, 'updatePrestashopDataStandard']);

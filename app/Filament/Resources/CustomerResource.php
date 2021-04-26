@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\User;
-use App\Filament\Roles;
 use Filament\Resources\Resource;
 use Filament\Resources\Forms\Form;
 use Filament\Resources\Tables\Table;
@@ -133,6 +131,7 @@ class CustomerResource extends Resource
     {
         return [
             RelationManagers\CustomerAddressesRelationManager::class,
+            RelationManagers\OrdersRelationManager::class,
         ];
     }
 
@@ -144,4 +143,5 @@ class CustomerResource extends Resource
             Pages\EditCustomer::routeTo('/{record}/edit', 'edit'),
         ];
     }
+
 }

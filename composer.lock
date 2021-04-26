@@ -64,16 +64,16 @@
         },
         {
             "name": "blade-ui-kit/blade-heroicons",
-            "version": "1.0.1",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/blade-ui-kit/blade-heroicons.git",
-                "reference": "2e47c31b6553e158ff93f14a961cc588d3302b0d"
+                "reference": "fcb102a569f085cb369d6a725f04f4b539fefd11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blade-ui-kit/blade-heroicons/zipball/2e47c31b6553e158ff93f14a961cc588d3302b0d",
-                "reference": "2e47c31b6553e158ff93f14a961cc588d3302b0d",
+                "url": "https://api.github.com/repos/blade-ui-kit/blade-heroicons/zipball/fcb102a569f085cb369d6a725f04f4b539fefd11",
+                "reference": "fcb102a569f085cb369d6a725f04f4b539fefd11",
                 "shasum": ""
             },
             "require": {
@@ -117,7 +117,7 @@
             ],
             "support": {
                 "issues": "https://github.com/blade-ui-kit/blade-heroicons/issues",
-                "source": "https://github.com/blade-ui-kit/blade-heroicons/tree/1.0.1"
+                "source": "https://github.com/blade-ui-kit/blade-heroicons/tree/v1.1.0"
             },
             "funding": [
                 {
@@ -129,7 +129,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-03-31T15:01:44+00:00"
+            "time": "2021-04-25T13:40:51+00:00"
         },
         {
             "name": "blade-ui-kit/blade-icons",
@@ -1128,16 +1128,16 @@
         },
         {
             "name": "filament/filament",
-            "version": "v1.9.4",
+            "version": "v1.9.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-filament/filament.git",
-                "reference": "035efb03722f0e184c78d21d25c6b4873d691c45"
+                "reference": "5375e275b85f521ddd26eac3a1af5ea9934cfee3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel-filament/filament/zipball/035efb03722f0e184c78d21d25c6b4873d691c45",
-                "reference": "035efb03722f0e184c78d21d25c6b4873d691c45",
+                "url": "https://api.github.com/repos/laravel-filament/filament/zipball/5375e275b85f521ddd26eac3a1af5ea9934cfee3",
+                "reference": "5375e275b85f521ddd26eac3a1af5ea9934cfee3",
                 "shasum": ""
             },
             "require": {
@@ -1201,7 +1201,7 @@
             "description": "The elegant TALL stack admin panel for Laravel artisans.",
             "support": {
                 "issues": "https://github.com/laravel-filament/filament/issues",
-                "source": "https://github.com/laravel-filament/filament/tree/v1.9.4"
+                "source": "https://github.com/laravel-filament/filament/tree/v1.9.6"
             },
             "funding": [
                 {
@@ -1209,7 +1209,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-04-19T08:34:07+00:00"
+            "time": "2021-04-23T22:36:10+00:00"
         },
         {
             "name": "fruitcake/laravel-cors",
@@ -6580,16 +6580,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.12.0",
+            "version": "2.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "d501fd2658d55491a2295ff600ae5978eaad7403"
+                "reference": "c13c0be93cff50f88bbd70827d993026821914dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/d501fd2658d55491a2295ff600ae5978eaad7403",
-                "reference": "d501fd2658d55491a2295ff600ae5978eaad7403",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/c13c0be93cff50f88bbd70827d993026821914dd",
+                "reference": "c13c0be93cff50f88bbd70827d993026821914dd",
                 "shasum": ""
             },
             "require": {
@@ -6639,7 +6639,7 @@
             ],
             "support": {
                 "issues": "https://github.com/filp/whoops/issues",
-                "source": "https://github.com/filp/whoops/tree/2.12.0"
+                "source": "https://github.com/filp/whoops/tree/2.12.1"
             },
             "funding": [
                 {
@@ -6647,7 +6647,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-03-30T12:00:00+00:00"
+            "time": "2021-04-25T12:00:00+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
