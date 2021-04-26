@@ -5,7 +5,6 @@ sail top > /dev/null 2>&1
 
 # Ensure that Docker is running...
 if [ $? -ne 0 ]; then
-    echo "Sail is not running. Starting..."
     ./vendor/bin/sail up -d
 fi
 ./vendor/bin/sail artisan migrate:fresh --seed
