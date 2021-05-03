@@ -38,6 +38,6 @@ class PrestaShopUpdateAll extends Command
     public function handle()
     {
         // app()->call('App\Http\Controllers\PrestashopDataController@prestashopUpdateAll');
-        $this->info(app()->call('App\Http\Controllers\PrestashopDataController@prestashopUpdateAll'));
+        $this->info(app()->call('App\Http\Controllers\PrestashopDataController@updateDataFromPrestashop'));
     }
 }
