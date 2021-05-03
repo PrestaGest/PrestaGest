@@ -31,7 +31,7 @@ class CreateOrderStatesTable extends Migration
             $table->unsignedTinyInteger('pdf_invoice')->default(0);
             $table->unsignedTinyInteger('pdf_delivery')->default(0);
             $table->unsignedTinyInteger('deleted')->default(0);
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

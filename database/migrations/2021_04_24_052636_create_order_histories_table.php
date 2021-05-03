@@ -20,7 +20,7 @@ class CreateOrderHistoriesTable extends Migration
             $table->unsignedInteger('id_order_state')->nullable();
             $table->unsignedInteger('id_order')->index('order_history_order');
             $table->dateTime('date_add');
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
     /*

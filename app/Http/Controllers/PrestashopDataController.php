@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\Customer;
 use App\Models\OrderState;
 use App\Models\OrderDetail;
+use Illuminate\Support\Str;
 use App\Models\OrderPayment;
 use App\Models\CustomerGroup;
 use Illuminate\Http\Response;
@@ -254,6 +255,30 @@ class PrestashopDataController extends Controller
         // $this->prestashopUpdateOrderPayments();
         return "Database updated successfully!";
     }
+
+    public static function prestashopSendUpdateData($data, $resource)
+    {
+        $data['id'] = $data['id_' . Str::singular($resource)];
+        $xmlSchema = Prestashop::getSchema($resource);
+        $sendXmlData = Prestashop::fillSchema($xmlSchema, $data, false);
+        Prestashop::edit([
+            'resource' => $resource,
+            'putXml' => $sendXmlData->asXml(),
+            'id'    => $data['id']
+        ]);
+    }
+
+    public static function prestashopSendNewData($data, $resource)
+    {
+        $xmlSchema = Prestashop::getSchema($resource);
+        $sendXmlData = Prestashop::fillSchema($xmlSchema, $data, false);
+        $insert = Prestashop::add([
+            'resource' => $resource,
+            'postXml' => $sendXmlData->asXml(),
+        ]);
+        return $insert->{Str::singular($resource)};
+    }
+
 
     public function prestashopUpdateProducts()
     {

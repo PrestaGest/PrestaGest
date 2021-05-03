@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Lang extends Model
 {
     protected $guarded = [];
+    public $timestamps = false;
 
     public function customers()
     {

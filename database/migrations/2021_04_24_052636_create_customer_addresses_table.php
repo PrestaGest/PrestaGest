@@ -38,7 +38,7 @@ class CreateCustomerAddressesTable extends Migration
             $table->boolean('deleted')->default(0);
             $table->string('date_add')->nullable();
             $table->string('date_upd')->nullable();
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

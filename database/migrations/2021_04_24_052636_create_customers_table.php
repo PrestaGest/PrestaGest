@@ -19,8 +19,8 @@ class CreateCustomersTable extends Migration
             $table->unsignedBigInteger('id_shop_group')->default(1)->index();
             $table->unsignedBigInteger('id_shop')->default(1)->index();
             $table->unsignedBigInteger('id_gender')->nullable()->index();
-            $table->unsignedBigInteger('id_default_group')->index();
-            $table->unsignedBigInteger('id_lang')->nullable();
+            $table->unsignedBigInteger('id_default_group')->default(3)->nullable()->index();
+            $table->unsignedBigInteger('id_lang')->nullable()->default(1);
             $table->unsignedInteger('id_risk')->nullable();
             $table->string('company')->nullable();
             $table->string('siret')->nullable();
@@ -49,7 +49,7 @@ class CreateCustomersTable extends Migration
             $table->string('reset_password_token')->nullable();
             $table->string('reset_password_validity')->nullable();
             $table->string('associations')->nullable();
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

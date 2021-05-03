@@ -27,7 +27,7 @@ class CreateOrderPaymentsTable extends Migration
             $table->char('card_expiration', 7)->nullable();
             $table->string('card_holder', 254)->nullable();
             $table->dateTime('date_add');
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

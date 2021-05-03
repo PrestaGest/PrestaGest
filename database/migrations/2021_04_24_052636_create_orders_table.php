@@ -63,7 +63,7 @@ class CreateOrdersTable extends Migration
             $table->string('associations')->nullable();
             $table->dateTime('date_add')->nullable()->index();
             $table->dateTime('date_upd')->nullable();
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

@@ -21,7 +21,7 @@ class CreateStatesTable extends Migration
             $table->string('iso_code')->nullable();
             $table->string('name')->nullable();
             $table->boolean('active')->nullable()->default(0);
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

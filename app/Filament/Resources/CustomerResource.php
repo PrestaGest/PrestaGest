@@ -10,6 +10,8 @@ use Filament\Resources\Tables\Columns;
 use Filament\Resources\Forms\Components;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
+use Carbon\Carbon;
+use DateTime;
 
 class CustomerResource extends Resource
 {
@@ -40,28 +42,66 @@ class CustomerResource extends Resource
                         Components\Select::make('id_gender')
                             ->placeholder(__('Gender'))
                             ->options([
+                                '0' => __('Other'),
                                 '1' => __('Male'),
                                 '2' => __('Female'),
-                            ])->label(__('Gender')),
+                            ])
+                            ->label(__('Gender'))
+                            ->default(1),
 
                         Components\BelongsToSelect::make('id_default_group')
                             ->relationship('customerGroup', 'name')
-                            ->preload(),
+                            ->preload()
+                            ->default(3),
+                        // Components\TextInput::make('passwd')
+                        //     ->autofocus()
+                        //     ->label(__('Password')),
 
-                        Components\BelongsToSelect::make('id_lang')
-                            ->relationship('customerLang', 'name')
-                            ->preload(),
+                        // Components\TextInput::make('date_add')
+                        //     ->disabled()
+                        //     ->label(__('Date Add')),
+
+                        // Components\TextInput::make('date_upd')
+                        //     ->disabled()
+                        //     ->label(__('Date Update')),
 
                         Components\DatePicker::make('birthday')
                             ->displayFormat($format = 'F j, Y')
+                            // ->maxDate( Carbon::yesterday()->toDateTimeString())
                             ->format($format = 'Y-m-d'),
 
-                        Components\DateTimePicker::make('date_add')
-                            ->displayFormat($format = 'F j, Y H:i:s')
-                            ->format($format = 'Y-m-d H:i:s')
-                            ->disabled(),
+                        Components\Toggle::make('newsletter')
+                            ->stacked()
+                            ->label(__('Newsletter'))
+                            ->offIcon('heroicon-s-arrow-right')
+                            ->onIcon('heroicon-s-check'),
+                        Components\Toggle::make('active')
+                            ->stacked()
+                            ->label(__('Active'))
+                            ->offIcon('heroicon-s-arrow-right')
+                            ->onIcon('heroicon-s-check')
+                            ->default(1),
+                        // Components\Toggle::make('optin')
+                        //     ->stacked()
+                        //     ->label(__('Optin'))
+                        //     ->offIcon('heroicon-s-arrow-right')
+                        //     ->onIcon('heroicon-s-check'),
+                        Components\TextInput::make('id_lang')
+                            ->hidden()
+                            ->default(1),
                     ]
                 )->columns(4),
+                Components\Fieldset::make(
+                    'Customer Data',
+                    [
+                        Components\TextInput::make('date_add')
+                            ->label(__('Date Add'))
+                            ->disabled(),
+                        Components\TextInput::make('date_upd')
+                            ->label(__('Date Upd'))
+                            ->disabled(),
+                    ]
+                )->columns(2),
 
             ])->columns(1);
     }
@@ -102,23 +142,23 @@ class CustomerResource extends Resource
                         '0' => '-',
                         '1' => 'Male',
                         '2' => 'Female',
-                    ])->sortable()->default(0),
+                    ])->sortable(),
                 Columns\Text::make('newsletter')
                     ->label(__('Newsletter'))
                     ->options([
                         '1' => 'Yes',
                         '0' => 'No',
-                    ])->sortable()->default(0),
+                    ])->sortable(),
                 Columns\Text::make('active')
                     ->label(__('Active'))
                     ->options([
                         '1' => 'Yes',
                         '0' => 'No',
-                    ])->sortable()->default(0),
+                    ])->sortable(),
 
                 Columns\Text::make('customerGroup.name')
                     ->label(__('Group'))
-                    ->sortable()->default(0),
+                    ->sortable(),
             ])
 
             ->filters([

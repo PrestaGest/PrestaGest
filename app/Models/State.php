@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class State extends Model
 {
     protected $guarded = [];
+    public $timestamps = false;
 
     public function country(){
         return $this->hasOne(Country::class, 'id_country', 'id_state');

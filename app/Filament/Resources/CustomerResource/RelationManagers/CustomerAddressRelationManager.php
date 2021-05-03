@@ -18,7 +18,7 @@ class CustomerAddressRelationManager extends RelationManager
 
     protected static $components = [
         'attach' => RelationManager\AttachRecord::class,
-        'create' => RelationManager\CreateRecord::class,
+        'create' => CreateCustomerAddress::class,
         'edit' => EditCustomerAddress::class,
         'list' => RelationManager\ListRecords::class,
     ];
@@ -34,7 +34,8 @@ class CustomerAddressRelationManager extends RelationManager
                         Components\TextInput::make('alias')
                             ->autofocus()
                             ->required()
-                            ->label(__('Alias')),
+                            ->label(__('Alias'))
+                            ->default('My Address'),
                         Components\TextInput::make('firstname')
                             ->autofocus()
                             ->required()
@@ -65,7 +66,8 @@ class CustomerAddressRelationManager extends RelationManager
                             ->label(__('Country'))
                             ->relationship('getCountry', 'name')
                             ->preload()
-                            ->dependable(),
+                            ->dependable()
+                            ->required(),
 
                         Components\BelongsToSelect::make('id_state')
                             ->label(__('State'))
@@ -106,11 +108,11 @@ class CustomerAddressRelationManager extends RelationManager
                     ->primary()
                     ->searchable()
                     ->sortable(),
-                Columns\Text::make('alias')
-                    ->label(__('Alias'))
-                    ->primary()
-                    ->searchable()
-                    ->sortable(),
+                // Columns\Text::make('alias')
+                //     ->label(__('Alias'))
+                //     ->primary()
+                //     ->searchable()
+                //     ->sortable(),
                 Columns\Text::make('lastname')
                     ->label(__('Lastname'))
                     ->primary()
@@ -146,11 +148,11 @@ class CustomerAddressRelationManager extends RelationManager
                     ->primary()
                     ->searchable()
                     ->sortable(),
-                Columns\Text::make('date_upd')
-                    ->label(__('Date Update'))
-                    ->primary()
-                    ->searchable()
-                    ->sortable(),
+                // Columns\Text::make('date_upd')
+                //     ->label(__('Date Update'))
+                //     ->primary()
+                //     ->searchable()
+                //     ->sortable(),
             ])
             ->filters([
                 //

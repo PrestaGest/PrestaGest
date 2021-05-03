@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CustomerAddress extends Model
 {
     protected $guarded = [];
+    public $timestamps = false;
 
     public function customer()
     {

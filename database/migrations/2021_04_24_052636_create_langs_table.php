@@ -24,7 +24,7 @@ class CreateLangsTable extends Migration
             $table->string('date_format_lite', 32);
             $table->string('date_format_full', 32);
             $table->boolean('is_rtl');
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 
