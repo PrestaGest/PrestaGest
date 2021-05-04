@@ -22,16 +22,16 @@ class PrestashopDataController extends Controller
      * this variable return association from table => model
      */
     protected $resources = [
+        'languages' => Lang::class,
+        'countries' => Country::class,
+        'states' => State::class,
         'customers' => Customer::class,
         'addresses' => CustomerAddress::class,
         'groups' => CustomerGroup::class,
         'orders' => Order::class,
         'order_details' => OrderDetail::class,
         'order_states' => OrderState::class,
-        'languages' => Lang::class,
-        'countries' => Country::class,
-        'states' => State::class,
-        'order_histories' => OrderHistory::class
+        'order_histories' => OrderHistory::class,
     ];
 
     /**
