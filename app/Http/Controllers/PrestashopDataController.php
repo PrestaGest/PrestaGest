@@ -10,9 +10,7 @@ use App\Models\Customer;
 use App\Models\OrderState;
 use App\Models\OrderDetail;
 use Illuminate\Support\Str;
-use App\Models\OrderPayment;
 use App\Models\CustomerGroup;
-use Illuminate\Http\Response;
 use App\Models\OrderHistory;
 use App\Models\CustomerAddress;
 use myfender\PrestashopWebService\PrestashopWebServiceFacade as Prestashop;
@@ -62,22 +60,29 @@ class PrestashopDataController extends Controller
         foreach ($this->resources as $key => $model) {
             // assign name resource
             $opt['resource'] = $key;
-            $opt['display'] = 'full';
-            // call webservice
             $xml = Prestashop::get($opt);
-            // split resource to children
-            $resources = $xml->$key->children();
-            $counting = count($resources);
+            $counting = count($xml->$key->children());
             $increment = 5000;
             for ($i = 0; $i < $counting; $i += $increment) {
+                $opt['limit'] = $i . ',' . $increment;
+                $opt['display'] = 'full';
+                // call webservice
+                $xml = Prestashop::get($opt);
+                $resources = $xml->$key->children();
+
                 foreach ($resources as $resource) {
                     // this call put a video result
                     $this->flushScreen($opt, $resource->id);
                     // setting the id "id_customer" for example
                     $id = "id_" . Str::singular($key);
                     // assign the data
+                    if ($resource->id) {
+                        $resource->$id = $resource->id;
+                    } else {
+                        continue;
+                    }
                     $resource->$id = $resource->id;
-                    if($key == "order_states" || $key == 'countries'){
+                    if ($key == "order_states" || $key == 'countries' || $key == 'groups') {
                         $resource->name = $resource->name->children();
                     }
                     unset($resource->id);

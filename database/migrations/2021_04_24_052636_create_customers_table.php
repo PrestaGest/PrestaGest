@@ -15,7 +15,7 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_customer')->unique();
+            $table->unsignedBigInteger('id_customer')->unique()->nullable();
             $table->unsignedBigInteger('id_shop_group')->default(1)->index();
             $table->unsignedBigInteger('id_shop')->default(1)->index();
             $table->unsignedBigInteger('id_gender')->nullable()->index();
@@ -27,7 +27,7 @@ class CreateCustomersTable extends Migration
             $table->string('ape')->nullable();
             $table->string('firstname')->nullable();
             $table->string('lastname')->nullable();
-            $table->string('email')->nullable();
+            $table->string('email')->nullable()->unique();
             $table->string('passwd')->nullable();
             $table->string('last_passwd_gen')->nullable();
             $table->string('birthday')->nullable();
