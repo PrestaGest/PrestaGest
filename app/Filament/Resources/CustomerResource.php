@@ -10,8 +10,6 @@ use Filament\Resources\Tables\Columns;
 use Filament\Resources\Forms\Components;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
-use Carbon\Carbon;
-use DateTime;
 
 class CustomerResource extends Resource
 {
@@ -136,13 +134,13 @@ class CustomerResource extends Resource
                     ->url(fn ($customer) => "mailto:{$customer->email}")
                     ->searchable()
                     ->sortable(),
-                Columns\Text::make('id_gender')
-                    ->label(__('Gender'))
-                    ->options([
-                        '0' => '-',
-                        '1' => 'Male',
-                        '2' => 'Female',
-                    ])->sortable(),
+                // Columns\Text::make('id_gender')
+                //     ->label(__('Gender'))
+                //     ->options([
+                //         '0' => '-',
+                //         '1' => 'Male',
+                //         '2' => 'Female',
+                //     ])->sortable(),
                 Columns\Text::make('newsletter')
                     ->label(__('Newsletter'))
                     ->options([
@@ -156,13 +154,17 @@ class CustomerResource extends Resource
                         '0' => 'No',
                     ])->sortable(),
 
-                Columns\Text::make('customerGroup.name')
-                    ->label(__('Group'))
+                Columns\Text::make('ordersCount')
+                    ->label(__('Order'))
+                    ->sortable(),
+
+                Columns\Text::make('customerAddressCount')
+                    ->label(__('Address'))
                     ->sortable(),
             ])
 
             ->filters([
-                Filter::make(__('Active'), fn ($query) => $query->where('active', 1)),
+                Filter::make(__('Active'), fn ($query)     => $query->where('active', 1)),
                 Filter::make(__('Newsletter'), fn ($query) => $query->where('newsletter', 1)),
             ]);
     }

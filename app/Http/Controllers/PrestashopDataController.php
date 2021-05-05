@@ -35,7 +35,7 @@ class PrestashopDataController extends Controller
     ];
 
     /**
-     * flushScreen
+     * flushScreen, send to video
      *
      * @param  mixed $function
      * @param  mixed $id
@@ -43,7 +43,9 @@ class PrestashopDataController extends Controller
      */
     public function flushScreen($function, $id)
     {
-        if (ob_get_level() == 0) ob_start();
+        if (ob_get_level() == 0) {
+            ob_start();
+        }
         echo $function['resource'] . ": " . $id . "\n";
         ob_flush();
         flush();
@@ -129,5 +131,17 @@ class PrestashopDataController extends Controller
             'postXml' => $sendXmlData->asXml(),
         ]);
         return $insert->{Str::singular($resource)};
+    }
+
+    public function test($call = 'products')
+    {
+        // leggo gli ID prodotti da PS
+        $opt['resource'] = $call;
+        $opt['display'] = 'full';
+        $opt['limit'] = '0,100';
+        $xml = Prestashop::get($opt);
+
+        $resources = $xml->$call->children();
+        dd($resources);
     }
 }

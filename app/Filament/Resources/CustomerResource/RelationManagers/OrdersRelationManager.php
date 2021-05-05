@@ -39,7 +39,7 @@ class OrdersRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
 
-                OrderState::make('getStatus.name')
+                OrderState::make('current_state')
                     ->label(__('Order State'))
                     ->searchable()
                     ->primary()
