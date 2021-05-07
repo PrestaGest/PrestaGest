@@ -29,7 +29,7 @@ class Customer extends Model
         return $this->belongsTo(Order::class, 'id_customer', 'id_customer');
     }
 
-    public function getOrdersCountAttribute()
+    public function getOrderCountAttribute()
     {
         return $this->orders()->count();
     }

@@ -154,7 +154,7 @@ class CustomerResource extends Resource
                         '0' => 'No',
                     ])->sortable(),
 
-                Columns\Text::make('ordersCount')
+                Columns\Text::make('orderCount')
                     ->label(__('Order'))
                     ->sortable(),
 

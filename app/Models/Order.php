@@ -8,6 +8,8 @@ class Order extends Model
 {
     protected $guarded = [];
     public $timestamps = false;
+    protected $with = ['getStatus'];
+
 
     public function getStatus()
     {
