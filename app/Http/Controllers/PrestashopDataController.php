@@ -58,40 +58,42 @@ class PrestashopDataController extends Controller
      */
     public function updateDataFromPrestashop()
     {
-        // foreach resources
         foreach ($this->resources as $key => $model) {
+
             // assign name resource
             $opt['resource'] = $key;
             $xml = Prestashop::get($opt);
-            $counting = count($xml->$key->children());
-            $increment = 5000;
+
+            $counting = count($xml->$key->children()); /// count resources
+            $increment = 5000; // this limit need for timeout
+
+            $opt['display'] = 'full';
+            $opt['sort'] = '[id_ASC]'; // order
+
             for ($i = 0; $i < $counting; $i += $increment) {
                 $opt['limit'] = $i . ',' . $increment;
-                $opt['display'] = 'full';
                 // call webservice
                 $xml = Prestashop::get($opt);
                 $resources = $xml->$key->children();
-
                 foreach ($resources as $resource) {
-                    // this call put a video result
-                    $this->flushScreen($opt, $resource->id);
-                    // setting the id "id_customer" for example
-                    $id = "id_" . Str::singular($key);
+                    $this->flushScreen($opt, $resource->id); //this call send to video the result
+                    $id = "id_" . Str::singular($key); // setting the id "id_customer" for example
+
                     // assign the data
                     if ($resource->id) {
                         $resource->$id = $resource->id;
                     } else {
-                        continue;
+                        continue; // if ID is empty
                     }
                     $resource->$id = $resource->id;
                     if ($key == "order_states" || $key == 'countries' || $key == 'groups') {
                         $resource->name = $resource->name->children();
                     }
                     unset($resource->id);
-                    // call the model with update function
-                    $model::upsert((array)$resource, $id);
+                    $model::upsert((array)$resource, $id); // call the model with update function
                 }
             }
+            unset($opt);
         }
         return "PrestaShop data Imported or Updated";
     }
