@@ -15,6 +15,7 @@ class CustomerResource extends Resource
 {
     public static $icon = 'heroicon-o-collection';
 
+
     public static function form(Form $form)
     {
         return $form
@@ -90,7 +91,7 @@ class CustomerResource extends Resource
                     ]
                 )->columns(4),
                 Components\Fieldset::make(
-                    'Customer Data',
+                    'Date',
                     [
                         Components\TextInput::make('date_add')
                             ->label(__('Date Add'))
@@ -142,29 +143,31 @@ class CustomerResource extends Resource
                 //         '2' => 'Female',
                 //     ])->sortable(),
                 Columns\Text::make('newsletter')
-                    ->label(__('Newsletter'))
+                    ->label(__('NL.'))
                     ->options([
                         '1' => 'Yes',
                         '0' => 'No',
                     ])->sortable(),
                 Columns\Text::make('active')
-                    ->label(__('Active'))
+                    ->label(__('Act.'))
                     ->options([
                         '1' => 'Yes',
                         '0' => 'No',
                     ])->sortable(),
 
-                Columns\Text::make('orderCount')
-                    ->label(__('Order'))
-                    ->sortable(),
+                Columns\Text::make('order_count')
+                    ->label(__('Ord.')),
 
-                Columns\Text::make('customerAddressCount')
-                    ->label(__('Address'))
-                    ->sortable(),
+                Columns\Text::make('customer_address_count')
+                    ->label(__('Addr.')),
+
+                Columns\Text::make('life_time_value')
+                    ->label(__('Value'))
+                    ->currency($symbol = '€ ', $decimalSeparator = '.', $thousandsSeparator = ','),
             ])
 
             ->filters([
-                Filter::make(__('Active'), fn ($query)     => $query->where('active', 1)),
+                Filter::make(__('Active'), fn ($query) => $query->where('active', 1)),
                 Filter::make(__('Newsletter'), fn ($query) => $query->where('newsletter', 1)),
             ]);
     }
@@ -172,8 +175,8 @@ class CustomerResource extends Resource
     public static function relations()
     {
         return [
-            RelationManagers\CustomerAddressRelationManager::class,
             RelationManagers\OrdersRelationManager::class,
+            RelationManagers\CustomerAddressRelationManager::class,
         ];
     }
 

@@ -10,13 +10,14 @@ class Customer extends Model
     protected $guarded = [];
     public $timestamps = false;
 
-    public function customerAddress() {
+    public function customerAddress()
+    {
         return $this->hasMany(CustomerAddress::class, 'id_customer', 'id_customer');
     }
 
     public function customerGroup()
     {
-    return $this->belongsTo(CustomerGroup::class, 'id_default_group', 'id_group');
+        return $this->belongsTo(CustomerGroup::class, 'id_default_group', 'id_group');
     }
 
     public function customerLang()
@@ -26,7 +27,7 @@ class Customer extends Model
 
     public function orders()
     {
-        return $this->belongsTo(Order::class, 'id_customer', 'id_customer');
+        return $this->hasMany(Order::class, 'id_customer', 'id_customer');
     }
 
     public function getOrderCountAttribute()
@@ -37,5 +38,10 @@ class Customer extends Model
     public function getCustomerAddressCountAttribute()
     {
         return $this->customerAddress()->count();
+    }
+
+    public function getLifeTimeValueAttribute()
+    {
+        return $this->orders()->sum('total_paid_real');
     }
 }
