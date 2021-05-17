@@ -2,12 +2,32 @@
 
 namespace App\Models;
 
-use Livewire\WithPagination;
+use Orchid\Screen\AsSource;
+use Orchid\Filters\Filterable;
+use Orchid\Attachment\Attachable;
 use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
+    use AsSource, Filterable, Attachable;
+
     protected $guarded = [];
+    protected $allowedSorts = [
+        'id_customer',
+        'lastname',
+        'firstname',
+        'gender',
+        'newsletter',
+        'active',
+    ];
+    protected $allowedFilters = [
+        'id_customer',
+        'lastname',
+        'firstname',
+        'gender',
+        'newsletter',
+        'active',
+    ];
     public $timestamps = false;
 
     public function customerAddress()

@@ -60,7 +60,7 @@ class CreateOrdersTable extends Migration
             $table->string('delivery_date')->nullable();
             $table->string('invoice_date')->nullable();
             $table->boolean('valid')->nullable()->default(0);
-            $table->string('associations')->nullable();
+            $table->jsonb('associations')->nullable();
             $table->dateTime('date_add')->nullable()->index();
             $table->dateTime('date_upd')->nullable();
             // $table->timestamps();

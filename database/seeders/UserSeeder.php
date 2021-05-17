@@ -17,14 +17,15 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'avatar' => null,
+                // 'avatar' => null,
                 'email' => 'admin@admin.com',
-                'is_admin' => true,
+                // 'is_admin' => true,
                 'name' => 'System Admin',
                 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
                 'remember_token' => Str::random(10),
-                'roles' => null,
-                'group' => null,
+                'permissions' => '{"platform.systems.roles":true,"platform.systems.users":true,"platform.systems.attachment":true,"platform.index":true}',
+                // 'roles' => null,
+                // 'group' => null,
             ],
             // [
             //     'avatar' => null,

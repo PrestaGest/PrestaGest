@@ -26,7 +26,7 @@ class CreateCountriesTable extends Migration
             $table->boolean('need_zip_code')->nullable()->default(0);
             $table->string('zip_code_format')->nullable();
             $table->boolean('display_tax_label')->nullable()->default(0);
-            $table->string('name')->nullable();
+            $table->jsonb('name')->nullable();
             // $table->timestamps();
         });
     }

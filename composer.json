@@ -2,35 +2,30 @@
     "name": "myfender/psgest",
     "type": "project",
     "description": "Manage your Prestashop",
-    "keywords": [
-        "Prestashop",
+    "keywords": ["Prestashop",
         "laravel",
-        "webservices"
-    ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/myfender/prestashop-laravel.git"
-        }
-    ],
+        "webservices"],
+            "repositories": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/myfender/prestashop-laravel.git"
+                }
+            ],
     "license": "OSL",
     "require": {
         "php": "^7.3|^8.0",
-        "blade-ui-kit/blade-heroicons": "^1.1",
-        "calebporzio/sushi": "^2.1",
+        "calebporzio/sushi": "^2.2",
         "fideloper/proxy": "^4.4",
-        "filament/filament": "^1.9",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "kitloong/laravel-migrations-generator": "^4.4",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
-        "livewire/livewire": "^2.4",
-        "myfender/prestashop-laravel": "^1.0"
+        "myfender/prestashop-laravel": "^1.0",
+        "orchid/crud": "^3.0",
+        "orchid/platform": "^10.3"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.5",
-        "beyondcode/laravel-query-detector": "^1.5",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",

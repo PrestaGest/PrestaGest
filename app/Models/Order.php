@@ -10,7 +10,7 @@ class Order extends Model
 
     public $timestamps = false;
 
-    protected $with = ['getStatus'];
+    protected $with = ['getStatus', 'customer'];
 
 
     public function getStatus()
@@ -20,6 +20,10 @@ class Order extends Model
 
     public function customer()
     {
-        return $this->belongTo(Customer::class, 'id_customer', 'id_customer');
+        return $this->belongsTo(Customer::class, 'id_customer', 'id_customer');
+    }
+
+    public function getFullNameAttribute(){
+        return "{$this->customer()->firstname} {$this->customer()->lastname}";
     }
 }

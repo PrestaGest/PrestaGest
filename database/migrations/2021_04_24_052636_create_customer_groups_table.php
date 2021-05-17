@@ -21,7 +21,7 @@ class CreateCustomerGroupsTable extends Migration
             $table->boolean('show_prices')->default(1);
             $table->dateTime('date_add')->nullable();
             $table->dateTime('date_upd')->nullable();
-            $table->string('name')->nullable();
+            $table->jsonb('name')->nullable();
             // $table->timestamps();
         });
     }

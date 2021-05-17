@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Livewire\Product;
-use App\Http\Livewire\Customer;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +16,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('customer/{id?}', [Customer::class, 'getCustomer']);
-Route::get('product/{id?}', [Product::class, 'getProduct']);

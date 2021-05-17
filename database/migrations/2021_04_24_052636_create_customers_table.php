@@ -27,7 +27,7 @@ class CreateCustomersTable extends Migration
             $table->string('ape')->nullable();
             $table->string('firstname')->nullable();
             $table->string('lastname')->nullable();
-            $table->string('email')->nullable()->unique();
+            $table->string('email')->nullable();
             $table->string('passwd')->nullable();
             $table->string('last_passwd_gen')->nullable();
             $table->string('birthday')->nullable();
@@ -48,7 +48,7 @@ class CreateCustomersTable extends Migration
             $table->dateTime('date_upd')->nullable();
             $table->string('reset_password_token')->nullable();
             $table->string('reset_password_validity')->nullable();
-            $table->string('associations')->nullable();
+            $table->jsonb('associations')->nullable();
             // $table->timestamps();
         });
     }

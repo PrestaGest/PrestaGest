@@ -62,7 +62,7 @@ class CreateOrderDetailsTable extends Migration
             $table->double('original_wholesale_price', 20, 6)->nullable()->default(0.000000);
             $table->double('total_refunded_tax_excl', 20, 6)->nullable()->default(0.000000);
             $table->double('total_refunded_tax_incl', 20, 6)->nullable()->default(0.000000);
-            $table->string('associations')->nullable();
+            $table->jsonb('associations')->nullable();
             // $table->timestamps();
         });
     }

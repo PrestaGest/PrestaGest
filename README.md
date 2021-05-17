@@ -1,246 +1,62 @@
-# Prestashop - Laravel
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-Prestashop Web Service Library for Laravel
+<p align="center">
+<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
+## About Laravel
 
-After updating composer, add the service provider to the `providers` array in `config/app.php`
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-```php
-myfender\PrestashopWebService\PrestashopWebServiceProvider::class,
-```
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-You may also add the Facade in the `aliases` array in `config/app.php`
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-```php
-'Prestashop' => myfender\PrestashopWebService\PrestashopWebServiceFacade::class,
-```
+## Learning Laravel
 
-Finally publish the configuration file using the artisan command
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-```shell
-php artisan vendor:publish --provider="myfender\PrestashopWebService\PrestashopWebServiceProvider"
-```
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Configuration
+## Laravel Sponsors
 
-Open the published configuration file at `config/prestashop-webservice.php`:
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-```php
-return [
-  'url' => 'http://prestashop.url',
-  'token' => 'INSERT YOUR TOKEN',
-  'debug' => env('APP_DEBUG', false),
-];
-```
+### Premium Partners
 
-Then populate the `url` field with the **root url** of the targeted Prestashop installation and `token` field with the API token obtained from Prestashop control panel in Web Service section. If `debug` is `true` Prestashop will return debug information when responding to API requests.
+- **[Vehikl](https://vehikl.com/)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Cubet Techno Labs](https://cubettech.com)**
+- **[Cyber-Duck](https://cyber-duck.co.uk)**
+- **[Many](https://www.many.co.uk)**
+- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+- **[DevSquad](https://devsquad.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+- **[OP.GG](https://op.gg)**
 
-## Usage
+## Contributing
 
-You may use the Prestashop Web Service wrapper in two ways:
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-### Using the dependency or method injection
+## Code of Conduct
 
-```php
-...
-use myfender\PrestashopWebService\PrestashopWebService;
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-class FooController extends Controller
-{
-    private $prestashop;
+## Security Vulnerabilities
 
-    public function __construct(PrestashopWebService $prestashop)
-    {
-        $this->prestashop = $prestashop;
-    }
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-    public function bar()
-    {
-        $opt['resource'] = 'customers';
-        $xml=$this->prestashop->get($opt);
-    }
-}
-```
+## License
 
-### Using the Facade
-
-```php
-...
-use Prestashop;
-
-...
-
-public function bar()
-{
-    $opt['resource'] = 'customers';
-    $xml=Prestashop::get($opt);
-}
-```
-
-## Prestashop Underlying library usage
-
-You may find complete documentation and tutorials regarding Prestashop Web Service Library in the [Prestashop Documentation](https://devdocs.prestashop.com/1.7/webservice/).
-
-## Helper methods
-
-I've added some helper methods to reduce development time:
-
-### Retrieving resource schema and filling data for posting
-
-You may call `getSchema()` method to retrieve the requested resource schema. You may then fill the schema with an associative array of data with `fillSchema()` method.
-
-```php
-$xmlSchema = Prestashop::getSchema('categories'); //returns a SimpleXMLElement instance with the desired schema
-
-$data = [
-  'name' => 'Clothes',
-  'link_rewrite' => 'clothes',
-  'active' => true,
-];
-
-$postXml = Prestashop::fillSchema($xmlSchema, $data);
-
-//The xml is now ready for being sent back to the web service to create a new category
-
-$response = Prestashop::add([
-  'resource' => 'categories',
-  'postXml' => $postXml->asXml(),
-]);
-```
-
-#### Preserving not filled nodes from removal
-
-The default behaviour for the `fillSchema` method is to remove the nodes that are not filled. If you want to preserve those nodes (typical update situation) put the third parameter as `false`
-
-```php
-$putXml = Prestashop::fillSchema($xmlSchema, $data, false);
-```
-
-#### Removing specific nodes
-
-When preserving unfilled nodes from removal you may specify some nodes to be removed as the fourth argument (this may be useful when updating a resource with some readonly nodes that would trigger error 400):
-
-```php
-$putXml = Prestashop::fillSchema($xmlSchema, $data, false, [
-  'manufacturer_name',
-  'quantity',
-]);
-//manufacturer_name and quantity only will be removed from the XML
-```
-
-#### Handling language values
-
-If the node has a language child you may use a simple string for the value if your shop has only one language installed.
-
-```php
-/*
-    xml node with one language child example
-    ...
-    <name>
-    <language id="1"/>
-    </name>
-    ...
-*/
-$data = ['name' => 'Clothes'];
-```
-
-If your shops has more than one language installed you may pass the node value as an array where the key is the language ID.
-
-```php
-/*
-    xml node with n language children example 
-    ...
-    <name>
-    <language id="1"/>
-    <language id="2"/>
-    </name>
-    ... 
-*/
-$data = [
-  'name' => [
-    1 => 'Clothes',
-    2 => 'Abbigliamento',
-  ],
-];
-```
-
-_Please note that if you don't provide an array of values keyed by the language ID all language values will have the same value._
-
-#### Handling associations with several siblings
-
-Provided you got a node with several associations like category association for products or similar as from this extract of product schema:
-
-```xml
-...
-<associations>
-<categories>
-<category>
-<id/>
-</category>
-</categories>
-<product_features>
-<product_feature>
-<id/>
-<id_feature_value/>
-</product_feature>
-</product_features>
-...
-```
-
-You can prepare the array data map for the `fillSchema` method in this way:
-
-```php
-$data => [
-    ...
-    'associations' => [
-        'categories' =>[
-            [ 'category' => ['id' => 4] ],
-            [ 'category' => ['id' => 5] ],
-            [ 'category' => ['id' => 11] ],
-        ],
-        'product_features' => [
-            [
-                'product_feature' => [
-                    'id' => 5,
-                    'id_feature_value' => 94
-                ]
-            ],
-            [
-                'product_feature' => [
-                    'id' => 1,
-                    'id_feature_value' => 2
-                ]
-            ]
-        ]
-    ]
-]
-```
-
-The result will be this as expected:
-
-```xml
-...
-<associations>
-    <categories>
-        <category>
-            <id>4</id>
-        </category>
-        <category>
-            <id>5</id>
-        </category>
-        <category>
-            <id>11</id>
-        </category>
-    </categories>
-    <product_features>
-        <product_feature>
-            <id>5</id>
-            <id_feature_value>94</id_feature_value>
-        </product_feature>
-        <product_feature>
-            <id>1</id>
-            <id_feature_value>2</id_feature_value>
-        </product_feature>
-    </product_features>
-...
-```
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

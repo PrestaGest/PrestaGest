@@ -6,12 +6,13 @@ use App\Models\Lang;
 use App\Models\Order;
 use App\Models\State;
 use App\Models\Country;
+use App\Models\Product;
 use App\Models\Customer;
 use App\Models\OrderState;
 use App\Models\OrderDetail;
 use Illuminate\Support\Str;
-use App\Models\CustomerGroup;
 use App\Models\OrderHistory;
+use App\Models\CustomerGroup;
 use App\Models\CustomerAddress;
 use myfender\PrestashopWebService\PrestashopWebServiceFacade as Prestashop;
 
@@ -19,19 +20,49 @@ class PrestashopDataController extends Controller
 {
     /**
      * $resources
-     * this variable return association from table => model
+     * this variable return association from table => model and the field with json data
      */
     protected $resources = [
-        'languages' => Lang::class,
-        'countries' => Country::class,
-        'states' => State::class,
-        'customers' => Customer::class,
-        'addresses' => CustomerAddress::class,
-        'groups' => CustomerGroup::class,
-        'orders' => Order::class,
-        'order_details' => OrderDetail::class,
-        'order_states' => OrderState::class,
-        'order_histories' => OrderHistory::class,
+        'products' => [
+            'model' => Product::class,
+            'jsonData' => 'name,description,description_short,delivery_in_stock,delivery_out_stock,meta_description,meta_keywords,meta_title,link_rewrite,available_now,available_later,associations',
+        ],
+        'languages' => [
+            'model' => Lang::class,
+        ],
+        'countries' => [
+            'model' => Country::class,
+            'jsonData' =>'name',
+        ],
+        'states' => [
+            'model' => State::class,
+        ],
+        'customers' => [
+            'model' => Customer::class,
+            'jsonData' => 'associations',
+        ],
+        'addresses' => [
+            'model' => CustomerAddress::class,
+        ],
+        'groups' => [
+            'model' => CustomerGroup::class,
+            'jsonData' => 'name',
+        ],
+        'orders' => [
+            'model' => Order::class,
+            'jsonData' => 'associations',
+        ],
+        'order_details' => [
+            'model' => OrderDetail::class,
+            'jsonData' => 'associations',
+        ],
+        'order_states' => [
+            'model' => OrderState::class,
+            'jsonData' => 'name,template',
+        ],
+        'order_histories' => [
+            'model' => OrderHistory::class,
+        ],
     ];
 
     /**
@@ -52,14 +83,27 @@ class PrestashopDataController extends Controller
     }
 
     /**
+     * parsingJsonData
+     *
+     * @param  mixed $resource
+     * @param  mixed $data
+     * @return void
+     */
+    protected function parsingJsonData($resource, $data)
+    {
+        foreach (explode(',', $data) as $field) {
+            $resource->$field = json_encode($resource->$field->children());
+        }
+    }
+
+    /**
      * updateDataFromPrestashop
      *
      * @return void
      */
     public function updateDataFromPrestashop()
     {
-        foreach ($this->resources as $key => $model) {
-
+        foreach ($this->resources as $key => $data) {
             // assign name resource
             $opt['resource'] = $key;
             $xml = Prestashop::get($opt);
@@ -78,19 +122,16 @@ class PrestashopDataController extends Controller
                 foreach ($resources as $resource) {
                     $this->flushScreen($opt, $resource->id); //this call send to video the result
                     $id = "id_" . Str::singular($key); // setting the id "id_customer" for example
-
+                    if (isset($data['jsonData'])) {
+                        $this->parsingJsonData($resource, $data['jsonData']);
+                    }
                     // assign the data
-                    if ($resource->id) {
-                        $resource->$id = $resource->id;
-                    } else {
-                        continue; // if ID is empty
-                    }
+                    if (!$resource->id) continue;
+
                     $resource->$id = $resource->id;
-                    if ($key == "order_states" || $key == 'countries' || $key == 'groups') {
-                        $resource->name = $resource->name->children();
-                    }
                     unset($resource->id);
-                    $model::upsert((array)$resource, $id); // call the model with update function
+
+                    $data['model']::upsert((array)$resource, $id); // call the model with update function
                 }
             }
             unset($opt);
@@ -140,10 +181,33 @@ class PrestashopDataController extends Controller
         // leggo gli ID prodotti da PS
         $opt['resource'] = $call;
         $opt['display'] = 'full';
-        $opt['limit'] = '0,100';
+        $opt['limit'] = '0,3';
         $xml = Prestashop::get($opt);
 
         $resources = $xml->$call->children();
-        dd($resources);
+        dump($resources);
+        // foreach ($resources->product->children() as $resource) {
+        //     // dump($resource);
+        //     foreach ($resource as $key => $value) {
+        //         echo $resource . " - " . $key . ': ' . $value . PHP_EOL . "<br>";
+        //     }
+    }
+    // foreach ($resources->product->children() as $resource) {
+    //     dump($resource);
+    //     foreach ($resource as $key => $value) {
+    //         echo $key . ': ' . $value . PHP_EOL . "<br>";
+    //     }
+    // }
+
+    /**
+     * updateDataFromPrestashop
+     *
+     * @return void
+     */
+    public function newTest()
+    {
+        $product = Product::find(1);
+        dump($product);
+        dd($product->associations->images->image);
     }
 }
