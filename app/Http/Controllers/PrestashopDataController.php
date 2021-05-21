@@ -176,13 +176,15 @@ class PrestashopDataController extends Controller
         return $insert->{Str::singular($resource)};
     }
 
-    public function test($call = 'products')
+    public function test($call = 'images', $call2 = '')
     {
-        // leggo gli ID prodotti da PS
+        if(!empty($call2)) $call = $call . '/' . $call2;
+
         $opt['resource'] = $call;
         $opt['display'] = 'full';
         $opt['limit'] = '0,3';
         $xml = Prestashop::get($opt);
+        dump($opt);
 
         $resources = $xml->$call->children();
         dump($resources);

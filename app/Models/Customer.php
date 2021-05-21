@@ -16,17 +16,25 @@ class Customer extends Model
         'id_customer',
         'lastname',
         'firstname',
+        'email',
         'gender',
         'newsletter',
         'active',
+        'orders',
+        'customerAddress',
+        'LifeTimeValue',
     ];
     protected $allowedFilters = [
         'id_customer',
         'lastname',
         'firstname',
+        'email',
         'gender',
         'newsletter',
         'active',
+        'orders',
+        'customerAddress',
+        'LifeTimeValue',
     ];
     public $timestamps = false;
 
@@ -50,15 +58,15 @@ class Customer extends Model
         return $this->hasMany(Order::class, 'id_customer', 'id_customer');
     }
 
-    public function getOrderCountAttribute()
-    {
-        return $this->orders()->count();
-    }
+    // public function getOrderCountAttribute()
+    // {
+    //     return $this->orders()->count();
+    // }
 
-    public function getCustomerAddressCountAttribute()
-    {
-        return $this->customerAddress()->count();
-    }
+    // public function getCustomerAddressCountAttribute()
+    // {
+    //     return $this->customerAddress()->count();
+    // }
 
     public function getLifeTimeValueAttribute()
     {

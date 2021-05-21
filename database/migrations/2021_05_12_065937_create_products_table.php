@@ -87,8 +87,8 @@ class CreateProductsTable extends Migration
             $table->string('mpn')->nullable();
             $table->jsonb('name')->nullable();
             $table->string('type')->nullable();
-            $table->unsignedInteger('id_default_combination')->default(1);
-            $table->unsignedInteger('id_default_image')->default(1);
+            $table->string('id_default_combination')->nullable();
+            $table->string('id_default_image')->nullable();
             $table->string('new')->nullable();
             $table->unsignedInteger('position_in_category')->default(1);
 

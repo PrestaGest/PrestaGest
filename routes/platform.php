@@ -14,6 +14,7 @@ use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
 use App\Orchid\Screens\Customers\CustomerScreen;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
+use App\Orchid\Screens\Customers\CustomerEditScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
 use App\Orchid\Screens\Examples\ExampleFieldsScreen;
 use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
@@ -102,6 +103,7 @@ Route::screen('dashboard', ExampleScreen::class)
             ->push(__('Dashboard'));
     });
 
+/* ==================== CUSTOMER ROUTE ===================== */
 Route::screen('customer', CustomerScreen::class)
     ->name('platform.customer')
     ->breadcrumbs(function (Trail $trail) {
@@ -109,6 +111,16 @@ Route::screen('customer', CustomerScreen::class)
             ->parent('platform.index')
             ->push(__('Customer'));
     });
+
+// Platform > Customer > Create
+Route::screen('customer/create', CustomerEditScreen::class)
+    ->name('platform.customer.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.customer')
+            ->push(__('Create'), route('platform.customer.create'));
+    });
+
 Route::screen('email', EmailSenderScreen::class)
     ->name('platform.email')
     ->breadcrumbs(function (Trail $trail) {
