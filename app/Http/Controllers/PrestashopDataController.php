@@ -2,77 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lang;
-use App\Models\Order;
-use App\Models\State;
-use App\Models\Country;
-use App\Models\Product;
-use App\Models\Customer;
-use App\Models\OrderState;
-use App\Models\OrderDetail;
+use App\Models\Resource;
 use Illuminate\Support\Str;
-use App\Models\OrderHistory;
-use App\Models\CustomerGroup;
-use App\Models\CustomerAddress;
 use myfender\PrestashopWebService\PrestashopWebServiceFacade as Prestashop;
 
 class PrestashopDataController extends Controller
 {
     /**
-     * $resources
-     * this variable return association from table => model and the field with json data
-     */
-    protected $resources = [
-        'products' => [
-            'model' => Product::class,
-            'jsonData' => 'name,description,description_short,delivery_in_stock,delivery_out_stock,meta_description,meta_keywords,meta_title,link_rewrite,available_now,available_later,associations',
-        ],
-        'languages' => [
-            'model' => Lang::class,
-        ],
-        'countries' => [
-            'model' => Country::class,
-            'jsonData' =>'name',
-        ],
-        'states' => [
-            'model' => State::class,
-        ],
-        'customers' => [
-            'model' => Customer::class,
-            'jsonData' => 'associations',
-        ],
-        'addresses' => [
-            'model' => CustomerAddress::class,
-        ],
-        'groups' => [
-            'model' => CustomerGroup::class,
-            'jsonData' => 'name',
-        ],
-        'orders' => [
-            'model' => Order::class,
-            'jsonData' => 'associations',
-        ],
-        'order_details' => [
-            'model' => OrderDetail::class,
-            'jsonData' => 'associations',
-        ],
-        'order_states' => [
-            'model' => OrderState::class,
-            'jsonData' => 'name,template',
-        ],
-        'order_histories' => [
-            'model' => OrderHistory::class,
-        ],
-    ];
-
-    /**
-     * flushScreen, send to video
+     * flushScreenToAvoidTimeout, send to video
      *
      * @param  mixed $function
      * @param  mixed $id
      * @return void
      */
-    public function flushScreen($function, $id)
+    public function flushScreenToAvoidTimeout($function, $id)
     {
         if (ob_get_level() == 0) {
             ob_start();
@@ -83,15 +26,15 @@ class PrestashopDataController extends Controller
     }
 
     /**
-     * parsingJsonData
+     * parsingArrayDataToJson
      *
      * @param  mixed $resource
      * @param  mixed $data
      * @return void
      */
-    protected function parsingJsonData($resource, $data)
+    protected function parsingArrayDataToJson($resource, $data)
     {
-        foreach (explode(',', $data) as $field) {
+        foreach (explode('|', $data) as $field) {
             $resource->$field = json_encode($resource->$field->children());
         }
     }
@@ -103,35 +46,37 @@ class PrestashopDataController extends Controller
      */
     public function updateDataFromPrestashop()
     {
-        foreach ($this->resources as $key => $data) {
-            // assign name resource
+        foreach (Resource::whereActive(1)->get() as $data) {
+            $key = $data->resource;
+            $model = $data->model;
+
             $opt['resource'] = $key;
             $xml = Prestashop::get($opt);
 
-            $counting = count($xml->$key->children()); /// count resources
+            $countingResources = count($xml->$key->children());
             $increment = 5000; // this limit need for timeout
 
             $opt['display'] = 'full';
-            $opt['sort'] = '[id_ASC]'; // order
+            $opt['sort'] = '[id_ASC]';
 
-            for ($i = 0; $i < $counting; $i += $increment) {
+            for ($i = 0; $i < $countingResources; $i += $increment) {
                 $opt['limit'] = $i . ',' . $increment;
-                // call webservice
+
                 $xml = Prestashop::get($opt);
                 $resources = $xml->$key->children();
+
                 foreach ($resources as $resource) {
-                    $this->flushScreen($opt, $resource->id); //this call send to video the result
-                    $id = "id_" . Str::singular($key); // setting the id "id_customer" for example
-                    if (isset($data['jsonData'])) {
-                        $this->parsingJsonData($resource, $data['jsonData']);
+                    if ($resource->id) {
+                        $this->flushScreenToAvoidTimeout($opt, $resource->id);
+                        $id = "id_" . Str::singular($key);
+
+                        if (isset($data->fields))
+                            $this->parsingArrayDataToJson($resource, $data->fields);
+
+                        $resource->$id = $resource->id;
+                        unset($resource->id);
+                        $model::upsert((array)$resource, 'id');
                     }
-                    // assign the data
-                    if (!$resource->id) continue;
-
-                    $resource->$id = $resource->id;
-                    unset($resource->id);
-
-                    $data['model']::upsert((array)$resource, $id); // call the model with update function
                 }
             }
             unset($opt);
@@ -140,13 +85,13 @@ class PrestashopDataController extends Controller
     }
 
     /**
-     * prestashopSendUpdateData
+     * sendUpdateDataToPrestashop
      *
      * @param  mixed $data
      * @param  mixed $resource
      * @return void
      */
-    public static function prestashopSendUpdateData($data, $resource)
+    public static function sendUpdateDataToPrestashop($data, $resource)
     {
         $data['id'] = $data['id_' . Str::singular($resource)];
         $xmlSchema = Prestashop::getSchema($resource);
@@ -159,13 +104,13 @@ class PrestashopDataController extends Controller
     }
 
     /**
-     * prestashopSendNewData
+     * sendNewDataToPrestashop
      *
      * @param  mixed $data
      * @param  mixed $resource
      * @return void
      */
-    public static function prestashopSendNewData($data, $resource)
+    public static function sendNewDataToPrestashop($data, $resource)
     {
         $xmlSchema = Prestashop::getSchema($resource);
         $sendXmlData = Prestashop::fillSchema($xmlSchema, $data, false);
@@ -176,9 +121,17 @@ class PrestashopDataController extends Controller
         return $insert->{Str::singular($resource)};
     }
 
+
+    /**
+     * test
+     *
+     * @param  mixed $call
+     * @param  mixed $call2
+     * @return void
+     */
     public function test($call = 'images', $call2 = '')
     {
-        if(!empty($call2)) $call = $call . '/' . $call2;
+        if (!empty($call2)) $call = $call . '/' . $call2;
 
         $opt['resource'] = $call;
         $opt['display'] = 'full';
@@ -208,7 +161,7 @@ class PrestashopDataController extends Controller
      */
     public function newTest()
     {
-        $product = Product::find(1);
+        $product = \App\Models\Product::find(1);
         dump($product);
         dd($product->associations->images->image);
     }

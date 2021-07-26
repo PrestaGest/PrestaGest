@@ -5,7 +5,6 @@ namespace App\Orchid\Screens\Customers;
 use App\Models\Order;
 use App\Models\Customer;
 use Orchid\Screen\Screen;
-use Orchid\Support\Color;
 use Illuminate\Http\Request;
 use App\Models\CustomerAddress;
 use Orchid\Screen\Actions\Link;
@@ -42,7 +41,7 @@ class CustomerScreen extends Screen
         return [
             'customers' => Customer::with(['orders', 'customerAddress'])->filters()->defaultSort('id_customer', 'desc')->paginate(),
             'total_order' => Order::all(),
-            'total_address' => CustomerAddress::count(),
+            // 'total_address' => CustomerAddress::count(),
         ];
     }
 
@@ -54,6 +53,12 @@ class CustomerScreen extends Screen
     public function commandBar(): array
     {
         return [
+            Button::make('Export Customer')
+                ->method('export')
+                ->icon('cloud-download')
+                ->rawClick()
+                ->novalidate(),
+
             Link::make(__('New Customer'))
                 ->icon('plus')
                 ->route('platform.customer.create'),
@@ -79,9 +84,37 @@ class CustomerScreen extends Screen
      */
     public function remove(Request $request): void
     {
-        Customer::findOrFail($request->get('id'))
-            ->delete();
+        $customer = Customer::findOrFail($request->get('id'));
+
+        if ($customer->orders->count() == 0)
+            $customer->customerAddress()->delete();
+
+        $customer->delete();
 
         Toast::info(__('Customer was removed'));
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function export()
+    {
+        return response()->streamDownload(function () {
+            $csv = tap(fopen('php://output', 'wb'), function ($csv) {
+                fputcsv($csv, ['header:col1', 'header:col2', 'header:col3']);
+            });
+
+            collect([
+                ['row1:col1', 'row1:col2', 'row1:col3'],
+                ['row2:col1', 'row2:col2', 'row2:col3'],
+                ['row3:col1', 'row3:col2', 'row3:col3'],
+            ])->each(function (array $row) use ($csv) {
+                fputcsv($csv, $row);
+            });
+
+            return tap($csv, function ($csv) {
+                fclose($csv);
+            });
+        }, 'File-name.csv');
     }
 }

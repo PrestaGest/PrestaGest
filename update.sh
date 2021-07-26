@@ -9,6 +9,6 @@ if [ $? -ne 0 ]; then
 fi
 ./vendor/bin/sail artisan view:clear
 ./vendor/bin/sail artisan cache:clear
-./vendor/bin/sail artisan migrate:fresh
+./vendor/bin/sail artisan migrate:fresh --seed
 ./vendor/bin/sail artisan orchid:admin admin admin@admin.com password
 ./vendor/bin/sail artisan prestashop:update-all
