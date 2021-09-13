@@ -49,6 +49,7 @@ class CustomerListLayout extends Table
 
             TD::make('id_gender', __('Gender'))
                 ->sort()
+                ->align(TD::ALIGN_CENTER)
                 ->render(function ($field) {
                     $a =  __("-");
                     if ($field->id_gender == 1) {
@@ -60,32 +61,34 @@ class CustomerListLayout extends Table
                 }),
             TD::make('newsletter', __('Newsletter'))
                 ->sort()
+                ->align(TD::ALIGN_CENTER)
                 ->render(function ($field) {
                     return ($field->newsletter == 1 ? __('Yes') : __('No'));
                 }),
             TD::make('active', __('Active'))
                 ->sort()
+                ->align(TD::ALIGN_CENTER)
                 ->render(function ($field) {
                     return ($field->active == 1 ? __('Yes') : __('No'));
                 }),
             TD::make('order_count', __('N° Orders'))
                 // ->sort()
-                ->align(TD::ALIGN_RIGHT)
+                ->align(TD::ALIGN_CENTER)
                 ->render(function ($field) {
                     return $field->orders->count();
                 }),
             TD::make('customer_address_count', __('Addr.'))
                 // ->sort()
-                ->align(TD::ALIGN_RIGHT)
+                ->align(TD::ALIGN_CENTER)
                 ->render(function ($field) {
                     return $field->customerAddress->count();
                 }),
 
-            TD::make('life_time_value', __('Order Value'))
+            TD::make('life_time_value', __('Sales'))
                 // ->sort()
-                ->align(TD::ALIGN_RIGHT)
+                ->align(TD::ALIGN_CENTER)
                 ->render(function ($field) {
-                    return "€ " . number_format($field->life_time_value, 2);
+                    return '<span class="">€ ' . number_format($field->life_time_value, 2). '</span>';
                 }),
 
 
@@ -105,19 +108,20 @@ class CustomerListLayout extends Table
                     return
                         Group::make([
                             Link::make(__(''))
-                                ->icon('pencil'),
+                                ->icon('pencil')
+                                ->route('platform.customer.edit', $customer->id),
 
                             DropDown::make()
                                 ->icon('options-vertical')
                                 ->list([
                                     Link::make(__('Edit'))
-                                        // ->route('platform.customer.edit', $customer->id)
+                                        ->route('platform.customer.edit', $customer->id)
                                         ->icon('pencil'),
 
                                     Button::make(__('Delete'))
                                         ->icon('trash')
                                         ->method('remove')
-                                        ->confirm(__('Once the customer is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.'))
+                                        ->confirm(__('Once the customer is deleted, all of its data will be permanently deleted. If the user has orders, they will not be canceled but will remain orphaned. Before deleting your account, please download any data or information that you wish to retain.'))
                                         ->parameters([
                                             'id' => $customer->id,
                                         ]),
@@ -195,26 +199,25 @@ class CustomerListLayout extends Table
                 ->align(TD::ALIGN_RIGHT)
                 ->colspan(7)
                 ->render(function () {
-                    return '<b>TOTAL:</b>';
+                    return "<b style='color:red'>TOTAL:</b>";
                 }),
 
             TD::make('total_order')
-                ->align(TD::ALIGN_RIGHT)
+                ->align(TD::ALIGN_CENTER)
                 ->render(function ($data) {
-                    return '<b>' . $data['total_order']->count() . '</b>';
+                    return "<b style='color:red'>" . $data['total_order']->count() . "</b>";
                 }),
 
             TD::make('total_address')
-                ->align(TD::ALIGN_RIGHT)
+                ->align(TD::ALIGN_CENTER)
                 ->render(function ($data) {
-                    return '<b>' . $data['total_address'] . '</b>';
+                    return "<b style='color:red'>" . $data['total_address'] . "</b>";
                 }),
 
             TD::make('total_order')
-                ->align(TD::ALIGN_RIGHT)
-                ->style(Color::PRIMARY())
+                ->align(TD::ALIGN_CENTER)
                 ->render(function ($data) {
-                    return "<b>€ " . number_format($data['total_order']->sum('total_paid_real'), 2) . '</b>';
+                    return "<b style='color:red'>€ " . number_format($data['total_order']->sum('total_paid_real'), 2) . "</b>";
                 }),
         ];
     }

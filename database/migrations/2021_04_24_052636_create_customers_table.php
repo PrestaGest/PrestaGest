@@ -44,12 +44,11 @@ class CreateCustomersTable extends Migration
             $table->boolean('active')->nullable()->default(0);
             $table->boolean('is_guest')->nullable()->default(0);
             $table->boolean('deleted')->nullable()->default(0);
-            $table->dateTime('date_add')->nullable();
-            $table->dateTime('date_upd')->nullable();
+            $table->timestamp('date_upd')->nullable();
+            $table->timestamp('date_add')->nullable();
             $table->string('reset_password_token')->nullable();
             $table->string('reset_password_validity')->nullable();
             $table->jsonb('associations')->nullable();
-            // $table->timestamps();
         });
     }
 
@@ -62,4 +61,5 @@ class CreateCustomersTable extends Migration
     {
         Schema::dropIfExists('customers');
     }
+
 }

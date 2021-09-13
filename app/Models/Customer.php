@@ -11,6 +11,9 @@ class Customer extends Model
 {
     use AsSource, Filterable, Attachable;
 
+    const CREATED_AT = 'date_add';
+    const UPDATED_AT = 'date_upd';
+
     protected $guarded = [];
     protected $allowedSorts = [
         'id_customer',
@@ -36,7 +39,7 @@ class Customer extends Model
         'customerAddress',
         'LifeTimeValue',
     ];
-    public $timestamps = false;
+    // public $timestamps = false;
 
     public function customerAddress()
     {
@@ -63,13 +66,23 @@ class Customer extends Model
     //     return $this->orders()->count();
     // }
 
-    // public function getCustomerAddressCountAttribute()
-    // {
-    //     return $this->customerAddress()->count();
-    // }
+    public function getCustomerAddressCountAttribute()
+    {
+        return $this->customerAddress()->count();
+    }
 
     public function getLifeTimeValueAttribute()
     {
         return $this->orders()->sum('total_paid_real');
+    }
+
+    public function getDateAddForHumansAttribute()
+    {
+        return $this->date_add->format('d M Y H:m:s');
+    }
+
+    public function getDateUpdForHumansAttribute()
+    {
+        return $this->date_upd->format('d M Y H:m:s');
     }
 }

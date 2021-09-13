@@ -112,6 +112,9 @@ Route::screen('customer', CustomerScreen::class)
             ->push(__('Customer'));
     });
 
+Route::screen('customer/{customer}/edit', CustomerEditScreen::class)
+    ->name('platform.customer.edit');
+
 // Platform > Customer > Create
 Route::screen('customer/create', CustomerEditScreen::class)
     ->name('platform.customer.create')
